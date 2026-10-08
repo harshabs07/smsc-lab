@@ -1,0 +1,198 @@
+(sdegeo:set-default-boolean "ABA")
+
+(sdegeo:create-rectangle
+  (position 0.0 0.0 0.0)
+  (position 1.0 0.5 0.0)
+  "Silicon"
+  "P_Substrate"
+)
+
+(sdegeo:create-rectangle
+  (position 0.0 0.0 0.0)
+  (position 0.3 0.15 0.0)
+  "Silicon"
+  "N_Source"
+)
+
+(sdegeo:create-rectangle
+  (position 0.7 0.0 0.0)
+  (position 1.0 0.15 0.0)
+  "Silicon"
+  "N_Drain"
+)
+
+(sdegeo:create-rectangle
+  (position 0.3 -0.005 0.0)
+  (position 0.7 0.0 0.0)
+  "SiO2"
+  "Gate_Oxide"
+)
+
+(sdegeo:create-rectangle
+  (position 0.3 -0.105 0.0)
+  (position 0.7 -0.005 0.0)
+  "PolySilicon"
+  "Gate_Poly"
+)
+
+(sdegeo:define-contact-set
+  "source"
+  4
+  (color:rgb 1 0 0)
+  "##"
+)
+
+(sdegeo:define-contact-set
+  "drain"
+  4
+  (color:rgb 0 1 0)
+  "##"
+)
+
+(sdegeo:define-contact-set
+  "gate"
+  4
+  (color:rgb 0 0 1)
+  "##"
+)
+
+(sdegeo:define-contact-set
+  "substrate"
+  4
+  (color:rgb 1 1 0)
+  "##"
+)
+
+(sdegeo:set-contact
+  (find-edge-id
+    (position 0.15 0.0 0.0)
+  )
+  "source"
+)
+
+(sdegeo:set-contact
+  (find-edge-id
+    (position 0.85 0.0 0.0)
+  )
+  "drain"
+)
+
+(sdegeo:set-contact
+  (find-edge-id
+    (position 0.5 -0.105 0.0)
+  )
+  "gate"
+)
+
+(sdegeo:set-contact
+  (find-edge-id
+    (position 0.5 0.5 0.0)
+  )
+  "substrate"
+)
+
+(sdedr:define-constant-profile
+  "Sub_Doping"
+  "BoronActiveConcentration"
+  1e17
+)
+
+(sdedr:define-constant-profile-region
+  "Place_Sub_Doping"
+  "Sub_Doping"
+  "P_Substrate"
+)
+
+(sdedr:define-constant-profile
+  "Source_Doping"
+  "PhosphorusActiveConcentration"
+  1e20
+)
+
+(sdedr:define-constant-profile-region
+  "Place_Source_Doping"
+  "Source_Doping"
+  "N_Source"
+)
+
+(sdedr:define-constant-profile
+  "Drain_Doping"
+  "PhosphorusActiveConcentration"
+  1e20
+)
+
+(sdedr:define-constant-profile-region
+  "Place_Drain_Doping"
+  "Drain_Doping"
+  "N_Drain"
+)
+
+(sdedr:define-constant-profile
+  "Gate_Doping"
+  "PhosphorusActiveConcentration"
+  1e20
+)
+
+(sdedr:define-constant-profile-region
+  "Place_Gate_Doping"
+  "Gate_Doping"
+  "Gate_Poly"
+)
+
+(sdedr:define-refinement-size
+  "Global_Refinement"
+  0.10
+  0.10
+  0.02
+  0.02
+)
+
+(sdedr:define-refinement-material
+  "Global_Placement"
+  "Global_Refinement"
+  "Silicon"
+)
+
+(sdedr:define-refeval-window
+  "Channel_Window"
+  "Rectangle"
+  (position 0.2 0.0 0.0)
+  (position 0.8 0.1 0.0)
+)
+
+(sdedr:define-refinement-size
+  "Channel_Refinement"
+  0.02
+  0.005
+  0.005
+  0.002
+)
+
+(sdedr:define-refinement-placement
+  "Channel_Placement"
+  "Channel_Refinement"
+  "Channel_Window"
+)
+
+(sdedr:define-refinement-size
+  "Oxide_Refinement"
+  0.02
+  0.001
+  0.01
+  0.001
+)
+
+(sdedr:define-refinement-region
+  "Oxide_Placement"
+  "Oxide_Refinement"
+  "Gate_Oxide"
+)
+
+(sdedr:define-refinement-function
+  "Channel_Refinement"
+  "DopingConcentration"
+  "MaxTransDiff"
+  1
+)
+
+(sde:build-mesh "NMOS")
