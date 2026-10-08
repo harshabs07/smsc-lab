@@ -1,0 +1,109 @@
+(sdegeo:create-rectangle
+  (position 0.0 0.0 0.0)
+  (position 1.0 0.5 0.0)
+  "Silicon"
+  "P_Silicon"
+)
+
+(sdegeo:create-rectangle
+  (position 0.0 0.5 0.0)
+  (position 1.0 1.0 0.0)
+  "Silicon"
+  "N_Silicon"
+)
+
+(sdegeo:define-contact-set
+  "p_contact"
+  4
+  (color:rgb 1 0 0)
+  "##"
+)
+
+(sdegeo:define-contact-set
+  "n_contact"
+  4
+  (color:rgb 0 0 1)
+  "##"
+)
+
+(sdegeo:set-contact
+  (find-edge-id
+    (position 0.5 0.0 0.0)
+  )
+  "p_contact"
+)
+
+(sdegeo:set-contact
+  (find-edge-id
+    (position 0.5 1.0 0.0)
+  )
+  "n_contact"
+)
+
+(sdedr:define-constant-profile
+  "P_Doping"
+  "BoronActiveConcentration"
+  1e18
+)
+
+(sdedr:define-constant-profile-region
+  "Place_P_Doping"
+  "P_Doping"
+  "P_Silicon"
+)
+
+(sdedr:define-constant-profile
+  "N_Doping"
+  "PhosphorusActiveConcentration"
+  1e18
+)
+
+(sdedr:define-constant-profile-region
+  "Place_N_Doping"
+  "N_Doping"
+  "N_Silicon"
+)
+
+(sdedr:define-refinement-size
+  "Global_Refinement"
+  0.10
+  0.10
+  0.005
+  0.005
+)
+
+(sdedr:define-refinement-material
+  "Global_Placement"
+  "Global_Refinement"
+  "Silicon"
+)
+
+(sdedr:define-refeval-window
+  "Junction_Window"
+  "Rectangle"
+  (position 0.0 0.45 0.0)
+  (position 1.0 0.55 0.0)
+)
+
+(sdedr:define-refinement-size
+  "Junction_Refinement"
+  0.02
+  0.005
+  0.001
+  0.001
+)
+
+(sdedr:define-refinement-placement
+  "Junction_Placement"
+  "Junction_Refinement"
+  "Junction_Window"
+)
+
+(sdedr:define-refinement-function
+  "Junction_Refinement"
+  "DopingConcentration"
+  "MaxTransDiff"
+  1
+)
+
+(sde:build-mesh "PN_Diode")
